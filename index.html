@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        /*2. Об’єкт “ДАІ” (Код, ПІБ власника машини; марка, номер
+        машини; колір. Запит автомобілів марки Х, номери яких починаються із
+        вказаного шаблону.*/
+        class Car {
+            constructor(code, owner, brand, number, color) {
+                this.code = code;
+                this.owner = owner;
+                this.brand = brand;
+                this.number = number;
+                this.color = color;
+            }
+        }
+
+        class DAI {
+            constructor() {
+                this.items = [];
+            }
+
+            add(car) {
+                if (!(car instanceof Car)) {
+                    throw `${car} is not an instance of Car`;
+                }
+                this.items.push(car);
+            }
+
+            addCars(cars) {
+                this.items = this.items.concat(cars);
+            }
+
+            getCarByCode(code) {
+                return this.items.find(car => car.code === code) || null;
+            }
+
+            getCarsByBrandAndNumber(brand, numberPrefix) {
+                return this.items.filter(car =>
+                    car.brand === brand && car.number.startsWith(numberPrefix)
+                );
+            }
+
+            getAll() {
+                return [...this.items];
+            }
+
+            update(code, newData) {
+                const car = this.getCarByCode(code);
+                if (!car) throw "Not found";
+                for (let key of ["code", "owner", "brand", "number", "color"]) {
+                    if (newData[key] !== undefined) {
+                        car[key] = newData[key];
+                    }
+                }
+            }
+
+            delete(id) {
+                const index = this.items.findIndex(car => car.code === id);
+                if (index === -1) throw "Not found";
+                this.items.splice(index, 1);
+            }
+        }
+
+        // Перевірка
+        const car1 = new Car(1, "John", "Toyota", "AA1234BB", "Red");
+        const car2 = new Car(2, "Ann", "Toyota", "BB5678CC", "Blue");
+        const car3 = new Car(3, "Jack", "Honda", "CC9101DD", "White");
+
+        const carCollection = new DAI();
+        carCollection.add(car1);
+        carCollection.addCars([car2, car3]);
+
+        console.log(carCollection.getCarByCode(1));
+        console.log(carCollection.getCarsByBrandAndNumber("Toyota", "AA"));
+
+        carCollection.update(1, { color: "Blue", number: "AA9999BB" });
+        console.log(carCollection.getCarByCode(1));
+
+        carCollection.delete(2);
+        console.log(carCollection.getAll());
+
+
+
+    </script>
+</body>
+
+</html>
